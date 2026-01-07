@@ -1,34 +1,32 @@
-<!DOCTYPE html>
+
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diccionario Generación Z</title>
+<title>Diccionario Callejero Interactivo</title>
 <style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
-    padding: 0 20px 50px 20px;
+    padding: 20px;
     background: linear-gradient(135deg, #ffecd2, #fcb69f);
-    min-height: 100vh;
+    color: #333;
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: #333;
   }
 
   h1 {
-    margin: 40px 0 20px 0;
     font-size: 2.5rem;
+    margin-bottom: 20px;
     text-align: center;
-    color: #333;
     text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
   }
 
-  input, textarea, button {
+  input, textarea {
     width: 90%;
     max-width: 500px;
-    padding: 12px 15px;
+    padding: 12px;
     margin: 5px 0;
     border-radius: 50px;
     border: none;
@@ -37,11 +35,15 @@
   }
 
   button {
+    padding: 10px 20px;
+    margin: 10px 5px;
+    border: none;
+    border-radius: 50px;
     background-color: #ff7e5f;
     color: white;
     font-weight: bold;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: transform 0.2s, background 0.2s;
   }
 
   button:hover {
@@ -61,7 +63,7 @@
   .word-card {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 15px;
-    padding: 20px 25px;
+    padding: 15px 20px;
     margin: 10px 0;
     width: 100%;
     box-shadow: 0 8px 20px rgba(0,0,0,0.15);
@@ -75,14 +77,12 @@
   }
 
   .word-card h2 {
-    margin: 0 0 10px 0;
+    margin: 0 0 8px 0;
     color: #ff7e5f;
   }
 
   .word-card p {
     margin: 5px 0;
-    font-size: 1rem;
-    line-height: 1.5;
   }
 
   .ejemplo {
@@ -99,150 +99,109 @@
     font-weight: bold;
   }
 
-  .no-results {
-    margin-top: 50px;
-    font-size: 1.2rem;
-    color: #333;
-    text-align: center;
-    animation: fadeIn 0.5s;
-  }
-
-  @keyframes fadeIn {
-    from {opacity:0;}
-    to {opacity:1;}
-  }
-
 </style>
 </head>
 <body>
 
-<h1>Diccionario Callejero</h1>
+<h1>Diccionario Callejero Interactivo</h1>
 
-<!-- Login -->
-<div id="loginDiv">
-  <input type="password" id="password" placeholder="Ingresa la contraseña para modo admin">
-  <button id="loginBtn">Entrar</button>
-</div>
+<input type="text" id="search" placeholder="Busca una palabra...">
 
-<!-- Diccionario normal + admin -->
-<div id="adminDiv" style="display:none; width:100%; max-width:600px;">
-  <input type="text" id="search" placeholder="Busca una palabra...">
+<h2>Agregar o editar palabra</h2>
+<input type="text" id="palabra" placeholder="Palabra">
+<textarea id="definicion" rows="2" placeholder="Definición"></textarea>
+<textarea id="ejemplo" rows="2" placeholder="Ejemplo"></textarea>
+<button id="addWord">Agregar / Actualizar</button>
 
-  <h2>Agregar / Editar palabra</h2>
-  <input type="text" id="palabra" placeholder="Palabra">
-  <textarea id="definicion" rows="2" placeholder="Definición"></textarea>
-  <textarea id="ejemplo" rows="2" placeholder="Ejemplo"></textarea>
-  <button id="addWord">Agregar / Actualizar</button>
-
-  <div id="dictionary" class="no-results">Escribe una palabra para buscar...</div>
-</div>
+<div id="dictionary" class="no-results">Escribe una palabra para buscar...</div>
 
 <script>
-// Contraseña admin
-const PASSWORD = "onegin";
-const loginBtn = document.getElementById("loginBtn");
-const loginDiv = document.getElementById("loginDiv");
-const adminDiv = document.getElementById("adminDiv");
+let words = [
+  {"palabra": "Alma", "definicion": "expresión de sorpresa.", "ejemplo": "¿Alma, en serio?"},
+  {"palabra": "Aviva", "definicion": "se dice a alguien que tiene que ponerse las pilas.", "ejemplo": "Te tienes que avivar."},
+  {"palabra": "Bro", "definicion": "forma de llamar a un amigo o a alguien cercano.", "ejemplo": "Bro, se me ha roto el lápiz / Qué pasa bro."}
+];
 
-loginBtn.addEventListener("click", () => {
-  const input = document.getElementById("password").value;
-  if(input === PASSWORD){
-    loginDiv.style.display = "none";
-    adminDiv.style.display = "block";
-    initDictionary();
-  } else {
-    alert("Contraseña incorrecta");
+const dictionaryDiv = document.getElementById('dictionary');
+const searchInput = document.getElementById('search');
+const palabraInput = document.getElementById('palabra');
+const definicionInput = document.getElementById('definicion');
+const ejemploInput = document.getElementById('ejemplo');
+const addButton = document.getElementById('addWord');
+
+function showWords(filteredWords) {
+  dictionaryDiv.innerHTML = '';
+  if (searchInput.value.trim() === '') {
+    dictionaryDiv.innerHTML = '<p class="no-results">Escribe una palabra para buscar...</p>';
+    return;
   }
+  if (filteredWords.length === 0) {
+    dictionaryDiv.innerHTML = '<p class="no-results">No se encontró ninguna palabra.</p>';
+    return;
+  }
+  filteredWords.forEach((word, index) => {
+    const card = document.createElement('div');
+    card.classList.add('word-card');
+    card.innerHTML = `
+      <h2>${word.palabra}</h2>
+      <p>${word.definicion}</p>
+      <p class="ejemplo">${word.ejemplo}</p>
+      <button class="edit-btn" onclick="editWord(${index})">Editar</button>
+    `;
+    dictionaryDiv.appendChild(card);
+  });
+}
+
+// Buscar palabras
+searchInput.addEventListener('input', () => {
+  const term = searchInput.value.toLowerCase();
+  const filtered = words.filter(w => w.palabra.toLowerCase().includes(term));
+  showWords(filtered);
 });
 
-function initDictionary() {
-  // Lista inicial de palabras
-  let words = [
-    {"palabra": "Alma", "definicion": "expresión de sorpresa.", "ejemplo": "¿Alma, en serio?"},
-    {"palabra": "Aviva", "definicion": "se dice a alguien que tiene que ponerse las pilas.", "ejemplo": "Te tienes que avivar."},
-    {"palabra": "Bro", "definicion": "forma de llamar a un amigo o a alguien cercano.", "ejemplo": "Bro, se me ha roto el lápiz / Qué pasa bro."},
-    {"palabra": "Boque", "definicion": "persona que no ha dado su primer beso.", "ejemplo": "Ella es boque"},
-    {"palabra": "Bomboclat", "definicion": "Expresión jamaicana para reaccionar a una imagen o comentario; “flipar”.", "ejemplo": ""},
-    {"palabra": "bañao", "definicion": "pasarse con otra persona.", "ejemplo": ""},
-    {"palabra": "Boy", "definicion": "chico", "ejemplo": ""},
-    {"palabra": "Chungar / Chunga", "definicion": "vomitar cuando bebes mucho.", "ejemplo": "Estoy muy borracho, voy a chungar."},
-    {"palabra": "Carechimba", "definicion": "insulto despectivo.", "ejemplo": ""},
-    {"palabra": "Chimba", "definicion": "Algo muy bueno (“qué chimba”). Negarse a hacer algo. Insulto (carechimba).", "ejemplo": "“Me vale chimba y medio” → me da igual."}
-    // ... agrega más palabras según tu JSON
-  ];
+// Agregar o actualizar palabra
+addButton.addEventListener('click', () => {
+  const p = palabraInput.value.trim();
+  const d = definicionInput.value.trim();
+  const e = ejemploInput.value.trim();
 
-  // Cargar palabras guardadas
-  if(localStorage.getItem("diccionario")) {
-    words = JSON.parse(localStorage.getItem("diccionario"));
+  if (!p || !d) {
+    alert('La palabra y la definición son obligatorias.');
+    return;
+  }
+
+  // Buscar si la palabra ya existe
+  const existingIndex = words.findIndex(w => w.palabra.toLowerCase() === p.toLowerCase());
+  if (existingIndex >= 0) {
+    words[existingIndex] = {palabra: p, definicion: d, ejemplo: e};
   } else {
-    localStorage.setItem("diccionario", JSON.stringify(words));
+    words.push({palabra: p, definicion: d, ejemplo: e});
   }
 
-  const dictionaryDiv = document.getElementById('dictionary');
-  const searchInput = document.getElementById('search');
-  const palabraInput = document.getElementById('palabra');
-  const definicionInput = document.getElementById('definicion');
-  const ejemploInput = document.getElementById('ejemplo');
-  const addButton = document.getElementById('addWord');
+  // Limpiar inputs
+  palabraInput.value = '';
+  definicionInput.value = '';
+  ejemploInput.value = '';
 
-  function showWords(filteredWords){
-    dictionaryDiv.innerHTML = '';
-    if(searchInput.value.trim() === ''){
-      dictionaryDiv.innerHTML = '<p class="no-results">Escribe una palabra para buscar...</p>';
-      return;
-    }
-    if(filteredWords.length === 0){
-      dictionaryDiv.innerHTML = '<p class="no-results">No se encontró ninguna palabra.</p>';
-      return;
-    }
-    filteredWords.forEach((word,index)=>{
-      const card = document.createElement('div');
-      card.classList.add('word-card');
-      card.innerHTML = `
-        <h2>${word.palabra}</h2>
-        <p>${word.definicion}</p>
-        <p class="ejemplo">${word.ejemplo}</p>
-        <button class="edit-btn" onclick="editWord(${index})">Editar</button>
-      `;
-      dictionaryDiv.appendChild(card);
-    });
-  }
+  // Refrescar resultados
+  const term = searchInput.value.toLowerCase();
+  const filtered = words.filter(w => w.palabra.toLowerCase().includes(term));
+  showWords(filtered);
+});
 
-  searchInput.addEventListener('input', ()=>{
-    const term = searchInput.value.toLowerCase();
-    const filtered = words.filter(w => w.palabra.toLowerCase().includes(term));
-    showWords(filtered);
-  });
-
-  addButton.addEventListener('click', ()=>{
-    const p = palabraInput.value.trim();
-    const d = definicionInput.value.trim();
-    const e = ejemploInput.value.trim();
-    if(!p || !d) { alert("Palabra y definición son obligatorias."); return; }
-    const existingIndex = words.findIndex(w => w.palabra.toLowerCase() === p.toLowerCase());
-    if(existingIndex>=0){
-      words[existingIndex] = {palabra:p, definicion:d, ejemplo:e};
-    } else {
-      words.push({palabra:p, definicion:d, ejemplo:e});
-    }
-    localStorage.setItem("diccionario", JSON.stringify(words));
-    palabraInput.value=''; definicionInput.value=''; ejemploInput.value='';
-    const term = searchInput.value.toLowerCase();
-    const filtered = words.filter(w => w.palabra.toLowerCase().includes(term));
-    showWords(filtered);
-  });
-
-  window.editWord = function(index){
-    const word = words[index];
-    palabraInput.value = word.palabra;
-    definicionInput.value = word.definicion;
-    ejemploInput.value = word.ejemplo;
-    palabraInput.focus();
-  }
-
-  showWords([]);
+// Editar palabra
+function editWord(index) {
+  const word = words[index];
+  palabraInput.value = word.palabra;
+  definicionInput.value = word.definicion;
+  ejemploInput.value = word.ejemplo;
+  palabraInput.focus();
 }
+
+// Inicialmente mostrar mensaje
+showWords([]);
 </script>
 
 </body>
 </html>
+on}</p> <p class="ejemplo">${word.ejemplo}</p> ; dictionaryDiv.appendChild(card); }); } searchInput.addEventListener('input', () => { const term = searchInput.value.toLower
