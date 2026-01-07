@@ -60,5 +60,105 @@
 
     .no-results {
       text-align: center;
-      color: #888;
-      marg
+      color: #555;
+      margin-top: 50px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Diccionario Callejero</h1>
+  <input type="text" id="search" placeholder="Busca una palabra...">
+  <div id="dictionary" class="no-results">Escribe una palabra para buscar...</div>
+
+  <script>
+    const words = [
+      {"palabra": "Alma", "definicion": "expresión de sorpresa.", "ejemplo": "¿Alma, en serio?"},
+      {"palabra": "Aviva", "definicion": "se dice a alguien que tiene que ponerse las pilas.", "ejemplo": "Te tienes que avivar."},
+      {"palabra": "Bro", "definicion": "forma de llamar a un amigo o a alguien cercano.", "ejemplo": "Bro, se me ha roto el lápiz / Qué pasa bro."},
+      {"palabra": "Boque", "definicion": "persona que no ha dado su primer beso.", "ejemplo": "Ella es boque"},
+      {"palabra": "Bomboclat", "definicion": "Expresión jamaicana para reaccionar a una imagen o comentario; “flipar”.", "ejemplo": ""},
+      {"palabra": "bañao", "definicion": "pasarse con otra persona.", "ejemplo": ""},
+      {"palabra": "Boy", "definicion": "chico", "ejemplo": ""},
+      {"palabra": "Chungar / Chunga", "definicion": "vomitar cuando bebes mucho.", "ejemplo": "Estoy muy borracho, voy a chungar."},
+      {"palabra": "Carechimba", "definicion": "insulto despectivo.", "ejemplo": ""},
+      {"palabra": "Chimba", "definicion": "Algo muy bueno (“qué chimba”). Negarse a hacer algo. Insulto (carechimba).", "ejemplo": "“Me vale chimba y medio” → me da igual."},
+      {"palabra": "chinada", "definicion": "Cuando una persona está incómoda, asustada o disgustada.", "ejemplo": ""},
+      {"palabra": "Chivar", "definicion": "follar", "ejemplo": ""},
+      {"palabra": "Chorbo", "definicion": "chico", "ejemplo": ""},
+      {"palabra": "Cuñadola / Cuñao", "definicion": "alguien que hace chistes malos.", "ejemplo": "“Qué cuñao”."},
+      {"palabra": "Diman", "definicion": "se utiliza para llamar a un amigo. (Sustantivo)", "ejemplo": "Diman, ven aquí."},
+      {"palabra": "Diley", "definicion": "viene del inglés, se usa cuando alguien va atrasado.", "ejemplo": "Vas con diley."},
+      {"palabra": "Date un chin", "definicion": "significa dar un poco de algo (por ejemplo comida). (Verbo)", "ejemplo": "Date un chin de doritos."},
+      {"palabra": "Diri", "definicion": "se dice de alguien con discapacidad; coloquialmente se usa para insultar a un amigo.", "ejemplo": "Eres  biende diri."},
+      {"palabra": "Detonar", "definicion": "mantener relaciones sexuales con alguien.", "ejemplo": "¿Detonamos?"},
+      {"palabra": "Dar un rule", "definicion": "Dar una vuelta.", "ejemplo": ""},
+      {"palabra": "Estar pelao / pelao", "definicion": "significa no tener dinero. (Adjetivo)", "ejemplo": "Estoy pelao de dinero / No vamos a la tienda que estoy pelao."},
+      {"palabra": "Estar to puesto", "definicion": "se refiere a estar fumado. (Adjetivo)", "ejemplo": "Me voy pa casa que estoy to puesto."},
+      {"palabra": "Empiquetao", "definicion": "estar bien vestido, con flow. (Adjetivo)", "ejemplo": "Estoy to empiquetao."},
+      {"palabra": "Fugar", "definicion": "irse de un lugar del que no puedes salir.", "ejemplo": "Hoy me fugaré de la prisión."},
+      {"palabra": "God boy", "definicion": "Se usa entre amigos para bromear cuando alguien cumple un encargo.", "ejemplo": ""},
+      {"palabra": "Guai", "definicion": "manera de decir que algo es muy divertido.", "ejemplo": "Qué guai ese plan."},
+      {"palabra": "Jambo", "definicion": "forma de llamar a un chico o una chica.", "ejemplo": "Qué mal me cae ese jambo."},
+      {"palabra": "Jomar", "definicion": "se refiere a comer o cuando vas a comer en casa.", "ejemplo": "Mamá voy a jomar que tengo hambre."},
+      {"palabra": "Joya", "definicion": "cuando ves algo que te gusta.", "ejemplo": "Eso es una joya."},
+      {"palabra": "Jurado / Jurao", "definicion": "expresión para afirmar algo.", "ejemplo": "Jurao que lo vi."},
+      {"palabra": "Kely", "definicion": "casa.", "ejemplo": "Vamos pa mi kely."},
+      {"palabra": "Manden", "definicion": "igual que diman, para llamar a un amigo. (Sustantivo)", "ejemplo": "Manden, vamos para otro lado."},
+      {"palabra": "Maje", "definicion": "se refiere a una chica o chico.", "ejemplo": "Maje ven acá."},
+      {"palabra": "Mood", "definicion": "palabra del inglés que hace referencia al humor.", "ejemplo": "No estoy en el mood → No tengo el humor."},
+      {"palabra": "Me tienes hasta la pija", "definicion": "estar harto de alguien.", "ejemplo": "Cállate ya, que me tienes hasta la pija."},
+      {"palabra": "Morón", "definicion": "expresión de estar todo morado", "ejemplo": ""},
+      {"palabra": "Matao", "definicion": "Ser malo en algo.", "ejemplo": ""},
+      {"palabra": "Me he bugeado", "definicion": "Sentirse perdido, confundido o cometer un error.", "ejemplo": ""},
+      {"palabra": "Me da todo el palo", "definicion": "Se refiere para decir cuando algo da pereza.", "ejemplo": "Me da todo el palo jugar fútbol."},
+      {"palabra": "Ñaño", "definicion": "se refiere a una chica o chico.", "ejemplo": "Ñaño ven."},
+      {"palabra": "NPC", "definicion": "Persona que sigue tendencias y no tiene estilo propio.", "ejemplo": ""},
+      {"palabra": "Nipa", "definicion": "Se usa para negar una propuesta u orden.", "ejemplo": ""},
+      {"palabra": "Person", "definicion": "se refiere a persona; también a alguien que es un personaje.", "ejemplo": "“Person” ¿puedes venir hoy? / Eres un person cuando estás con nosotros."},
+      {"palabra": "Peluko", "definicion": "se dice en la calle a un estilo llamativo o cutre.", "ejemplo": "Ese peluko está gozoso."},
+      {"palabra": "Pillar", "definicion": "Comprar estupefacientes. Coger algo / contagiarse de algo.", "ejemplo": "Voy a pillar peis. / El finde pillé un catarro / Voy al súper a pillar leche."},
+      {"palabra": "Pateo", "definicion": "pegar patadas a una persona. (Sustantivo)", "ejemplo": "Te vamos a meter un pateo."},
+      {"palabra": "Pelao", "definicion": "persona calva o “sin pelo”.", "ejemplo": "Persona que es calva."},
+      {"palabra": "Pitufo", "definicion": "Se refiere a los policías.", "ejemplo": ""},
+      {"palabra": "Peta", "definicion": "Forma coloquial de referirse a un porro.", "ejemplo": ""},
+      {"palabra": "Sapo", "definicion": "persona muy chivata.", "ejemplo": "Le cuento algo y lo dice a todos."}
+    ];
+
+    const dictionaryDiv = document.getElementById('dictionary');
+    const searchInput = document.getElementById('search');
+
+    function showWords(filteredWords) {
+      dictionaryDiv.innerHTML = '';
+      if(filteredWords.length === 0 && searchInput.value.trim() !== '') {
+        dictionaryDiv.innerHTML = '<p class="no-results">No se encontró ninguna palabra.</p>';
+        return;
+      } 
+      if(filteredWords.length === 0) {
+        dictionaryDiv.innerHTML = '<p class="no-results">Escribe una palabra para buscar...</p>';
+        return;
+      }
+      filteredWords.forEach(word => {
+        const card = document.createElement('div');
+        card.classList.add('word-card');
+        card.innerHTML = `
+          <h2>${word.palabra}</h2>
+          <p>${word.definicion}</p>
+          <p class="ejemplo">${word.ejemplo}</p>
+        `;
+        dictionaryDiv.appendChild(card);
+      });
+    }
+
+    searchInput.addEventListener('input', () => {
+      const term = searchInput.value.toLowerCase();
+      const filtered = words.filter(w => w.palabra.toLowerCase().includes(term));
+      showWords(filtered);
+    });
+
+    // No mostrar palabras al inicio
+    showWords([]);
+  </script>
+</body>
+</html>
+
