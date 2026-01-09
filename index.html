@@ -1,153 +1,132 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diccionario Generación Z</title>
-
-<style>
-:root{
-  --main-color:#ff7e5f;
-}
-
-body{
-  font-family:'Segoe UI',Tahoma,Verdana,sans-serif;
-  margin:0;
-  padding:0 20px 50px;
-  background:linear-gradient(135deg,#ffecd2,var(--main-color));
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  color:#333;
-}
-
-h1{
-  margin:20px 0 10px;
-  font-size:2.3rem;
-  text-align:center;
-}
-
-#logo{
-  width:200px;
-  margin:15px 0 25px;
-  filter: hue-rotate(0deg) saturate(1.2);
-  transition: filter 0.4s ease;
-}
-
-#colorPicker{
-  margin:15px 0 25px;
-  width:120px;
-  height:45px;
-  border:none;
-  cursor:pointer;
-}
-
-input, textarea, button{
-  width:90%;
-  max-width:500px;
-  padding:12px;
-  margin:6px 0;
-  border-radius:50px;
-  border:none;
-  font-size:1rem;
-}
-
-button{
-  background:var(--main-color);
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-#dictionary{
-  width:100%;
-  max-width:600px;
-  margin-top:20px;
-}
-
-.word-card{
-  background:white;
-  border-radius:15px;
-  padding:20px;
-  margin:10px 0;
-  box-shadow:0 8px 20px rgba(0,0,0,.15);
-}
-
-.word-card h2{
-  color:var(--main-color);
-  margin:0 0 10px;
-}
-
-.ejemplo{
-  font-style:italic;
-  color:#555;
-}
-
-.no-results{
-  text-align:center;
-  font-size:1.1rem;
-  margin-top:40px;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Diccionario Interactivo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      transition: background 0.5s, color 0.5s;
+    }
+    #search {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    .word-card {
+      border: 1px solid #ccc;
+      padding: 10px 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.8);
+      transition: background 0.3s;
+    }
+    .word-card:hover {
+      background: rgba(255,255,255,1);
+    }
+    .ejemplo {
+      font-style: italic;
+      color: #555;
+    }
+    .no-results {
+      color: #888;
+      font-style: italic;
+    }
+    #colorPicker {
+      margin-top: 20px;
+      padding: 5px;
+    }
+    #logo {
+      display: block;
+      margin: 20px 0;
+      width: 120px;
+    }
+  </style>
 </head>
-
 <body>
 
-<img src="logo.png" id="logo" alt="Logo CIFO">
+  <input type="text" id="search" placeholder="Busca una palabra...">
+  <div id="dictionary">
+    <p class="no-results">Cargando diccionario...</p>
+  </div>
 
-<h1>Diccionario Callejero</h1>
+  <input type="color" id="colorPicker" value="#ff9f43">
+  <img id="logo" src="logo.png" alt="logo">
 
-<label>🎨 Elige color de la web</label>
-<input type="color" id="colorPicker" value="#ff7e5f">
+  <script>
+    let words = [];
 
-<input type="text" id="search" placeholder="Busca una palabra...">
+    const search = document.getElementById("search");
+    const dict = document.getElementById("dictionary");
+    const picker = document.getElementById("colorPicker");
+    const logo = document.getElementById("logo");
 
-<div id="dictionary" class="no-results">
-  Escribe una palabra para buscar...
-</div>
+    /* -------- CARGAR JSON -------- */
+    fetch('words.json')
+      .then(response => response.json())
+      .then(data => {
+        words = data;
+        dict.innerHTML = '<p class="no-results">Escribe una palabra para buscar...</p>';
+      })
+      .catch(err => {
+        console.error("Error al cargar JSON:", err);
+        dict.innerHTML = '<p class="no-results">No se pudo cargar el diccionario.</p>';
+      });
 
-<script>
-const words=[
-  {palabra:"Alma",definicion:"expresión de sorpresa.",ejemplo:"¿Alma, en serio?"},
-  {palabra:"Bro",definicion:"forma de llamar a un amigo.",ejemplo:"Qué pasa bro"},
-  {palabra:"Chimba",definicion:"algo muy bueno o insulto.",ejemplo:"Me vale chimba y medio"}
-];
+    /* -------- BUSCADOR -------- */
+    search.addEventListener("input", () => {
+      const t = search.value.toLowerCase();
+      dict.innerHTML = "";
 
-const search=document.getElementById("search");
-const dict=document.getElementById("dictionary");
-const picker=document.getElementById("colorPicker");
-const logo=document.getElementById("logo");
+      if (!t) {
+        dict.innerHTML = '<p class="no-results">Escribe una palabra para buscar...</p>';
+        return;
+      }
 
-/* ---- CAMBIO DE COLOR GLOBAL ---- */
-picker.addEventListener("input",()=>{
-  document.documentElement.style.setProperty("--main-color",picker.value);
-  logo.style.filter=`hue-rotate(${Math.random()*360}deg) saturate(1.5)`;
-});
+      const res = words.filter(w => w.palabra.toLowerCase().includes(t));
 
-/* ---- BUSCADOR ---- */
-search.addEventListener("input",()=>{
-  const t=search.value.toLowerCase();
-  dict.innerHTML="";
-  if(!t){
-    dict.innerHTML='<p class="no-results">Escribe una palabra para buscar...</p>';
-    return;
-  }
-  const res=words.filter(w=>w.palabra.toLowerCase().includes(t));
-  if(res.length===0){
-    dict.innerHTML='<p class="no-results">No se encontró ninguna palabra</p>';
-    return;
-  }
-  res.forEach(w=>{
-    dict.innerHTML+=`
-      <div class="word-card">
-        <h2>${w.palabra}</h2>
-        <p>${w.definicion}</p>
-        <p class="ejemplo">${w.ejemplo}</p>
-      </div>`;
-  });
-});
-</script>
+      if (res.length === 0) {
+        dict.innerHTML = '<p class="no-results">No se encontró ninguna palabra</p>';
+        return;
+      }
+
+      let html = "";
+      res.forEach(w => {
+        html += `
+          <div class="word-card">
+            <h2>${w.palabra}</h2>
+            <p>${w.definicion}</p>
+            <p class="ejemplo">${w.ejemplo}</p>
+          </div>`;
+      });
+      dict.innerHTML = html;
+    });
+
+    /* -------- COLOR REAL -------- */
+    function isDark(color) {
+      const c = color.substring(1);
+      const rgb = parseInt(c,16);
+      const r = (rgb>>16)&255;
+      const g = (rgb>>8)&255;
+      const b = rgb&255;
+      return (r*0.299 + g*0.587 + b*0.114) < 140;
+    }
+
+    picker.addEventListener("input", () => {
+      const color = picker.value;
+      document.documentElement.style.setProperty("--main-color", color);
+
+      const dark = isDark(color);
+      document.body.style.background = dark ? color : `linear-gradient(135deg,#ffecd2,${color})`;
+      document.body.style.color = dark ? "white" : "#333";
+
+      logo.style.filter = dark
+        ? "invert(1) brightness(1.2)"
+        : "brightness(0) saturate(100%) sepia(1) hue-rotate(220deg)";
+    });
+  </script>
 
 </body>
 </html>
