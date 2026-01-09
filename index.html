@@ -3,147 +3,150 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diccionario Callejero</title>
+<title>Diccionario Generación Z</title>
+
 <style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(135deg, #ffecd2, #fcb69f);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: #333;
-  }
-
-  h1 {
-    margin: 40px 0 20px 0;
-    font-size: 2.5rem;
-    text-align: center;
-    color: #333;
-    text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
-  }
-
-  #search {
-    width: 90%;
-    max-width: 500px;
-    padding: 15px 20px;
-    font-size: 1.2rem;
-    border: none;
-    border-radius: 50px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    outline: none;
-    margin-bottom: 30px;
-  }
-
-  #dictionary {
-    width: 100%;
-    max-width: 600px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .word-card {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 15px;
-    padding: 20px 25px;
-    margin: 10px 0;
-    width: 100%;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-
-  .word-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0,0,0,0.25);
-  }
-
-  .word-card h2 {
-    margin: 0 0 10px 0;
-    color: #ff7e5f;
-  }
-
-  .word-card p {
-    margin: 5px 0;
-    font-size: 1rem;
-    line-height: 1.5;
-  }
-
-  .ejemplo {
-    font-style: italic;
-    color: #555;
-  }
-
-  .no-results {
-    margin-top: 50px;
-    font-size: 1.2rem;
-    color: #333;
-    text-align: center;
-    animation: fadeIn 0.5s;
-  }
-
-  @keyframes fadeIn {
-    from {opacity:0;}
-    to {opacity:1;}
-  }
-</style>
-</head>
-<body>
-
-<h1>Diccionario Callejero</h1>
-<input type="text" id="search" placeholder="Busca una palabra...">
-<div id="dictionary" class="no-results">Escribe una palabra para buscar...</div>
-
-<script>
-const words = [
-  {"palabra": "Alma", "definicion": "expresión de sorpresa.", "ejemplo": "¿Alma, en serio?"},
-  {"palabra": "Aviva", "definicion": "se dice a alguien que tiene que ponerse las pilas.", "ejemplo": "Te tienes que avivar."},
-  {"palabra": "Bro", "definicion": "forma de llamar a un amigo o a alguien cercano.", "ejemplo": "Bro, se me ha roto el lápiz / Qué pasa bro."},
-  {"palabra": "Boque", "definicion": "persona que no ha dado su primer beso.", "ejemplo": "Ella es boque"},
-  {"palabra": "Bomboclat", "definicion": "Expresión jamaicana para reaccionar a una imagen o comentario; “flipar”.", "ejemplo": ""},
-  {"palabra": "bañao", "definicion": "pasarse con otra persona.", "ejemplo": ""},
-  {"palabra": "Boy", "definicion": "chico", "ejemplo": ""},
-  {"palabra": "Chungar / Chunga", "definicion": "vomitar cuando bebes mucho.", "ejemplo": "Estoy muy borracho, voy a chungar."},
-  {"palabra": "Carechimba", "definicion": "insulto despectivo.", "ejemplo": ""},
-  {"palabra": "Chimba", "definicion": "Algo muy bueno (“qué chimba”). Negarse a hacer algo. Insulto (carechimba).", "ejemplo": "“Me vale chimba y medio” → me da igual."}
-  // ... Puedes agregar el resto de las palabras aquí
-];
-
-const dictionaryDiv = document.getElementById('dictionary');
-const searchInput = document.getElementById('search');
-
-function showWords(filteredWords) {
-  dictionaryDiv.innerHTML = '';
-  if (searchInput.value.trim() === '') {
-    dictionaryDiv.innerHTML = '<p class="no-results">Escribe una palabra para buscar...</p>';
-    return;
-  }
-  if(filteredWords.length === 0) {
-    dictionaryDiv.innerHTML = '<p class="no-results">No se encontró ninguna palabra.</p>';
-    return;
-  }
-  filteredWords.forEach(word => {
-    const card = document.createElement('div');
-    card.classList.add('word-card');
-    card.innerHTML = `
-      <h2>${word.palabra}</h2>
-      <p>${word.definicion}</p>
-      <p class="ejemplo">${word.ejemplo}</p>
-    `;
-    dictionaryDiv.appendChild(card);
-  });
+:root{
+  --main-color:#ff7e5f;
 }
 
-searchInput.addEventListener('input', () => {
-  const term = searchInput.value.toLowerCase();
-  const filtered = words.filter(w => w.palabra.toLowerCase().includes(term));
-  showWords(filtered);
+body{
+  font-family:'Segoe UI',Tahoma,Verdana,sans-serif;
+  margin:0;
+  padding:0 20px 50px;
+  background:linear-gradient(135deg,#ffecd2,var(--main-color));
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  color:#333;
+}
+
+h1{
+  margin:20px 0 10px;
+  font-size:2.3rem;
+  text-align:center;
+}
+
+#logo{
+  width:200px;
+  margin:15px 0 25px;
+  filter: hue-rotate(0deg) saturate(1.2);
+  transition: filter 0.4s ease;
+}
+
+#colorPicker{
+  margin:15px 0 25px;
+  width:120px;
+  height:45px;
+  border:none;
+  cursor:pointer;
+}
+
+input, textarea, button{
+  width:90%;
+  max-width:500px;
+  padding:12px;
+  margin:6px 0;
+  border-radius:50px;
+  border:none;
+  font-size:1rem;
+}
+
+button{
+  background:var(--main-color);
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+#dictionary{
+  width:100%;
+  max-width:600px;
+  margin-top:20px;
+}
+
+.word-card{
+  background:white;
+  border-radius:15px;
+  padding:20px;
+  margin:10px 0;
+  box-shadow:0 8px 20px rgba(0,0,0,.15);
+}
+
+.word-card h2{
+  color:var(--main-color);
+  margin:0 0 10px;
+}
+
+.ejemplo{
+  font-style:italic;
+  color:#555;
+}
+
+.no-results{
+  text-align:center;
+  font-size:1.1rem;
+  margin-top:40px;
+}
+</style>
+</head>
+
+<body>
+
+<img src="logo.png" id="logo" alt="Logo CIFO">
+
+<h1>Diccionario Callejero</h1>
+
+<label>🎨 Elige color de la web</label>
+<input type="color" id="colorPicker" value="#ff7e5f">
+
+<input type="text" id="search" placeholder="Busca una palabra...">
+
+<div id="dictionary" class="no-results">
+  Escribe una palabra para buscar...
+</div>
+
+<script>
+const words=[
+  {palabra:"Alma",definicion:"expresión de sorpresa.",ejemplo:"¿Alma, en serio?"},
+  {palabra:"Bro",definicion:"forma de llamar a un amigo.",ejemplo:"Qué pasa bro"},
+  {palabra:"Chimba",definicion:"algo muy bueno o insulto.",ejemplo:"Me vale chimba y medio"}
+];
+
+const search=document.getElementById("search");
+const dict=document.getElementById("dictionary");
+const picker=document.getElementById("colorPicker");
+const logo=document.getElementById("logo");
+
+/* ---- CAMBIO DE COLOR GLOBAL ---- */
+picker.addEventListener("input",()=>{
+  document.documentElement.style.setProperty("--main-color",picker.value);
+  logo.style.filter=`hue-rotate(${Math.random()*360}deg) saturate(1.5)`;
 });
 
-// Mostrar mensaje inicial
-showWords([]);
+/* ---- BUSCADOR ---- */
+search.addEventListener("input",()=>{
+  const t=search.value.toLowerCase();
+  dict.innerHTML="";
+  if(!t){
+    dict.innerHTML='<p class="no-results">Escribe una palabra para buscar...</p>';
+    return;
+  }
+  const res=words.filter(w=>w.palabra.toLowerCase().includes(t));
+  if(res.length===0){
+    dict.innerHTML='<p class="no-results">No se encontró ninguna palabra</p>';
+    return;
+  }
+  res.forEach(w=>{
+    dict.innerHTML+=`
+      <div class="word-card">
+        <h2>${w.palabra}</h2>
+        <p>${w.definicion}</p>
+        <p class="ejemplo">${w.ejemplo}</p>
+      </div>`;
+  });
+});
 </script>
 
 </body>
