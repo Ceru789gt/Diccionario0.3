@@ -2,45 +2,53 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Diccionario Interactivo</title>
+<title>Diccionario Ultra Pro HD</title>
 <style>
   body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    transition: background 0.5s, color 0.5s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f9f9f9; /* Fondo liso */
+    color: #333;
   }
 
-  #search {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    margin-bottom: 20px;
+  h1 {
+    text-align: center;
+    margin-top: 20px;
+    color: #ff6b6b;
   }
 
   #dictionary {
     display: flex;
-    flex-direction: column;
-    gap: 15px;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
   }
 
   .word-card {
-    padding: 15px 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    background: #fff;
-    transition: transform 0.2s, box-shadow 0.2s;
+    background-color: #ffffff; /* Card liso */
+    border-radius: 16px;
+    padding: 20px;
+    width: 280px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08); /* Sombra suave */
+    transition: transform 0.3s, box-shadow 0.3s;
   }
 
   .word-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12); /* Hover elegante */
   }
 
   .word-card h2 {
-    margin: 0 0 5px 0;
-    color: var(--main-color, #ff9f43);
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #ff9f43; /* Color de acento liso */
+    font-size: 1.4em;
+  }
+
+  .word-card p {
+    margin: 5px 0;
   }
 
   .ejemplo {
@@ -48,108 +56,59 @@
     color: #555;
   }
 
-  .no-results {
-    font-style: italic;
-    color: #888;
-  }
-
-  #colorPicker {
-    margin-top: 20px;
-  }
-
   #logo {
     display: block;
-    margin: 20px 0;
-    width: 120px;
+    margin: 20px auto;
+    width: 150px;
+  }
+
+  @media (max-width: 600px) {
+    .word-card {
+      width: 90%;
+    }
   }
 </style>
 </head>
 <body>
 
-<input type="text" id="search" placeholder="Escribe una palabra...">
-<div id="dictionary">
-  <p class="no-results">Cargando diccionario...</p>
-</div>
-
-<input type="color" id="colorPicker" value="#ff9f43">
-<!-- Logo cargado desde logo.png en la misma carpeta -->
+<h1>Diccionario Ultra Pro HD</h1>
 <img id="logo" src="logo.png" alt="logo">
 
-<script>
-let words = [];
+<div id="dictionary">
 
-const search = document.getElementById("search");
-const dict = document.getElementById("dictionary");
-const picker = document.getElementById("colorPicker");
-const logo = document.getElementById("logo");
+  <div class="word-card">
+    <h2>Alma</h2>
+    <p>Expresión de sorpresa.</p>
+    <p class="ejemplo">¿Alma, en serio?</p>
+  </div>
 
-/* -------- CARGAR JSON -------- */
-fetch('words.json')
-  .then(response => response.json())
-  .then(data => {
-    words = data;
-    dict.innerHTML = '<p class="no-results">Escribe una palabra para buscar...</p>';
-  })
-  .catch(err => {
-    console.error("Error al cargar JSON:", err);
-    dict.innerHTML = '<p class="no-results">No se pudo cargar el diccionario.</p>';
-  });
+  <div class="word-card">
+    <h2>Aviva</h2>
+    <p>Se dice a alguien que tiene que ponerse las pilas.</p>
+    <p class="ejemplo">Te tienes que avivar.</p>
+  </div>
 
-/* -------- BUSCADOR -------- */
-search.addEventListener("input", () => {
-  const t = search.value.toLowerCase();
-  dict.innerHTML = "";
+  <div class="word-card">
+    <h2>Bro</h2>
+    <p>Forma de llamar a un amigo o a alguien cercano.</p>
+    <p class="ejemplo">Qué pasa bro</p>
+  </div>
 
-  if (!t) {
-    dict.innerHTML = '<p class="no-results">Escribe una palabra para buscar...</p>';
-    return;
-  }
+  <div class="word-card">
+    <h2>Boque</h2>
+    <p>Persona que no ha dado su primer beso.</p>
+    <p class="ejemplo">Ella es boque</p>
+  </div>
 
-  const res = words.filter(w => w.palabra.toLowerCase().includes(t));
+  <div class="word-card">
+    <h2>Chimba</h2>
+    <p>Algo muy bueno o insulto.</p>
+    <p class="ejemplo">Me vale chimba y medio</p>
+  </div>
 
-  if (res.length === 0) {
-    dict.innerHTML = '<p class="no-results">No se encontró ninguna palabra</p>';
-    return;
-  }
+  <!-- Agrega aquí todas tus demás palabras -->
 
-  let html = "";
-  res.forEach(w => {
-    html += `
-      <div class="word-card">
-        <h2>${w.palabra}</h2>
-        <p>${w.definicion}</p>
-        <p class="ejemplo">${w.ejemplo}</p>
-      </div>`;
-  });
-  dict.innerHTML = html;
-});
-
-/* -------- COLOR REAL -------- */
-function isDark(color) {
-  const c = color.substring(1);
-  const rgb = parseInt(c,16);
-  const r = (rgb>>16)&255;
-  const g = (rgb>>8)&255;
-  const b = rgb&255;
-  return (r*0.299 + g*0.587 + b*0.114) < 140;
-}
-
-picker.addEventListener("input", () => {
-  const color = picker.value;
-  document.documentElement.style.setProperty("--main-color", color);
-
-  const dark = isDark(color);
-  document.body.style.background = dark ? color : `linear-gradient(135deg,#ffecd2,${color})`;
-  document.body.style.color = dark ? "white" : "#333";
-
-  logo.style.filter = dark
-    ? "invert(1) brightness(1.2)"
-    : "brightness(0) saturate(100%) sepia(1) hue-rotate(220deg)";
-});
-</script>
+</div>
 
 </body>
 </html>
-
-
-
