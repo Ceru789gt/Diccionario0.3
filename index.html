@@ -2,14 +2,12 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Diccionario joven</title>
-
+<title>Diccionario Ultra Pro Max Neon</title>
 <style>
 :root {
   --main-color: #ff9f43;
   --bg-color: #f5f5f5;
   --text-color: #333;
-  --card-bg: #ffffff;
 }
 
 /* ----- BODY ----- */
@@ -65,14 +63,13 @@ h1 {
 
 /* ----- CARD ----- */
 .word-card {
-  background-color: var(--card-bg);
   border-radius: 16px;
   padding: 20px;
   width: 260px;
-  border-top: 5px solid var(--main-color);
   box-shadow: 0 6px 20px rgba(0,0,0,0.08);
   transition: transform 0.3s, box-shadow 0.3s;
   animation: fade 0.4s ease;
+  color: #fff;
 }
 
 @keyframes fade {
@@ -87,7 +84,6 @@ h1 {
 
 .word-card h2 {
   margin: 0 0 8px 0;
-  color: var(--main-color);
 }
 
 .word-card p {
@@ -96,12 +92,12 @@ h1 {
 
 .ejemplo {
   font-style: italic;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 /* ----- HIGHLIGHT ----- */
 .highlight {
-  background: yellow;
+  background: rgba(255,255,0,0.6);
   font-weight: bold;
   border-radius: 2px;
   padding: 0 3px;
@@ -133,21 +129,18 @@ h1 {
 .dark {
   --bg-color: #121212;
   --text-color: #eaeaea;
-  --card-bg: #1f1f1f;
 }
 </style>
 </head>
 
 <body>
 
-<h1>Diccionario Ultra Pro HD</h1>
+<h1>Diccionario Ultra Pro Max Neon</h1>
 <img id="logo" src="logo.png" alt="logo">
 
 <input id="search" type="text" placeholder="Busca una palabra...">
 
-<div id="dictionary">
-  <p class="no-results">Cargando diccionario...</p>
-</div>
+<div id="dictionary"></div>
 
 <div class="controls">
   <input type="color" id="colorPicker" value="#ff9f43">
@@ -156,6 +149,12 @@ h1 {
 
 <script>
 let words = [];
+
+/* ----- COLORES NEON ----- */
+const neonColors = [
+  "#ff3f81", "#ff9f43", "#3affc4", "#43a1ff",
+  "#9d43ff", "#ffeb3f", "#ff6b6b", "#43ff8a"
+];
 
 const search = document.getElementById("search");
 const dict = document.getElementById("dictionary");
@@ -167,7 +166,7 @@ fetch("words.json")
   .then(r => r.json())
   .then(data => {
     words = data;
-    dict.innerHTML = '<p class="no-results">Escribe una palabra para buscar...</p>';
+    dict.innerHTML = "";
   });
 
 /* ---- HIGHLIGHT ---- */
@@ -182,11 +181,7 @@ search.addEventListener("input", () => {
   const t = search.value.toLowerCase();
   dict.innerHTML = "";
 
-  if (!t) {
-    dict.innerHTML = '<p class="no-results">
-"Made by computer science class" </p>';
-    return;
-  }
+  if (!t) return;
 
   const res = words.filter(w =>
     w.palabra.toLowerCase().includes(t) ||
@@ -199,9 +194,10 @@ search.addEventListener("input", () => {
     return;
   }
 
-  res.forEach(w => {
+  res.forEach((w, i) => {
+    const color = neonColors[i % neonColors.length]; // color automático por card
     dict.innerHTML += `
-      <div class="word-card">
+      <div class="word-card" style="background-color:${color}">
         <h2>${highlight(w.palabra, t)}</h2>
         <p>${highlight(w.definicion, t)}</p>
         <p class="ejemplo">${highlight(w.ejemplo, t)}</p>
