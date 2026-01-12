@@ -4,12 +4,14 @@
 <meta charset="UTF-8">
 <title>Diccionario Ultra Pro HD</title>
 <style>
+  /* ---- Reset y tipografía ---- */
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 20px;
-    background-color: #f9f9f9; /* Fondo liso */
+    background-color: #f5f5f5; /* fondo liso */
     color: #333;
+    transition: background 0.5s, color 0.5s;
   }
 
   h1 {
@@ -18,37 +20,59 @@
     color: #ff6b6b;
   }
 
+  /* ---- Input de búsqueda ---- */
+  #search {
+    width: 100%;
+    max-width: 500px;
+    display: block;
+    margin: 30px auto 20px auto;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 25px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    outline: none;
+    transition: box-shadow 0.3s;
+  }
+
+  #search:focus {
+    box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+  }
+
+  /* ---- Contenedor de cards ---- */
   #dictionary {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
-    margin-top: 30px;
+    margin-bottom: 40px;
   }
 
+  /* ---- Cards ---- */
   .word-card {
-    background-color: #ffffff; /* Card liso */
+    background-color: #ffffff; /* card liso */
     border-radius: 16px;
     padding: 20px;
-    width: 280px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08); /* Sombra suave */
+    width: 260px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
     transition: transform 0.3s, box-shadow 0.3s;
   }
 
   .word-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.12); /* Hover elegante */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
   }
 
   .word-card h2 {
     margin-top: 0;
     margin-bottom: 8px;
-    color: #ff9f43; /* Color de acento liso */
+    color: var(--main-color, #ff9f43);
     font-size: 1.4em;
   }
 
   .word-card p {
     margin: 5px 0;
+    line-height: 1.4;
   }
 
   .ejemplo {
@@ -56,14 +80,41 @@
     color: #555;
   }
 
+  .highlight {
+    background-color: yellow;
+    font-weight: bold;
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+
+  .no-results {
+    font-style: italic;
+    color: #666;
+    text-align: center;
+    width: 100%;
+  }
+
+  #colorPicker {
+    display: block;
+    margin: 0 auto 30px auto;
+    padding: 5px;
+    width: 50px;
+    height: 50px;
+    border: none;
+    cursor: pointer;
+  }
+
   #logo {
     display: block;
-    margin: 20px auto;
+    margin: 0 auto 40px auto;
     width: 150px;
   }
 
   @media (max-width: 600px) {
     .word-card {
+      width: 90%;
+    }
+    #search {
       width: 90%;
     }
   }
@@ -74,41 +125,82 @@
 <h1>Diccionario Ultra Pro HD</h1>
 <img id="logo" src="logo.png" alt="logo">
 
+<input type="text" id="search" placeholder="Busca una palabra...">
 <div id="dictionary">
-
-  <div class="word-card">
-    <h2>Alma</h2>
-    <p>Expresión de sorpresa.</p>
-    <p class="ejemplo">¿Alma, en serio?</p>
-  </div>
-
-  <div class="word-card">
-    <h2>Aviva</h2>
-    <p>Se dice a alguien que tiene que ponerse las pilas.</p>
-    <p class="ejemplo">Te tienes que avivar.</p>
-  </div>
-
-  <div class="word-card">
-    <h2>Bro</h2>
-    <p>Forma de llamar a un amigo o a alguien cercano.</p>
-    <p class="ejemplo">Qué pasa bro</p>
-  </div>
-
-  <div class="word-card">
-    <h2>Boque</h2>
-    <p>Persona que no ha dado su primer beso.</p>
-    <p class="ejemplo">Ella es boque</p>
-  </div>
-
-  <div class="word-card">
-    <h2>Chimba</h2>
-    <p>Algo muy bueno o insulto.</p>
-    <p class="ejemplo">Me vale chimba y medio</p>
-  </div>
-
-  <!-- Agrega aquí todas tus demás palabras -->
-
+  <p class="no-results">Cargando diccionario...</p>
 </div>
+
+<input type="color" id="colorPicker" value="#ff9f43">
+
+<script>
+let words = [];
+
+const search = document.getElementById("search");
+const dict = document.getElementById("dictionary");
+const picker = document.getElementById("colorPicker");
+const logo = document.getElementById("logo");
+
+/* -------- CARGAR JSON -------- */
+fetch('words.json')
+  .then(res => res.json())
+  .then(data => {
+    words = data;
+    dict.innerHTML = '<p class="no-results">Escribe una palabra para buscar...</p>';
+  })
+  .catch(err => {
+    console.error("Error al cargar JSON:", err);
+    dict.innerHTML = '<p class="no-results">No se pudo cargar el diccionario.</p>';
+  });
+
+/* -------- BUSCADOR AVANZADO -------- */
+function highlight(text, term) {
+  if (!term) return text;
+  const regex = new RegExp(`(${term})`, "gi");
+  return text.replace(regex, '<span class="highlight">$1</span>');
+}
+
+search.addEventListener("input", () => {
+  const t = search.value.toLowerCase();
+  dict.innerHTML = "";
+
+  if (!t) {
+    dict.innerHTML = '<p class="no-results">Escribe una palabra para buscar...</p>';
+    return;
+  }
+
+  const res = words.filter(w =>
+    w.palabra.toLowerCase().includes(t) ||
+    w.definicion.toLowerCase().includes(t) ||
+    w.ejemplo.toLowerCase().includes(t)
+  );
+
+  if (res.length === 0) {
+    dict.innerHTML = '<p class="no-results">No se encontró ninguna palabra</p>';
+    return;
+  }
+
+  let html = "";
+  res.forEach(w => {
+    html += `
+      <div class="word-card">
+        <h2>${highlight(w.palabra, t)}</h2>
+        <p>${highlight(w.definicion, t)}</p>
+        <p class="ejemplo">${highlight(w.ejemplo, t)}</p>
+      </div>`;
+  });
+  dict.innerHTML = html;
+});
+
+/* -------- COLOR PICKER -------- */
+picker.addEventListener("input", () => {
+  const color = picker.value;
+  document.documentElement.style.setProperty("--main-color", color);
+  document.body.style.backgroundColor = "#f5f5f5"; // fondo liso fijo
+  document.body.style.color = "#333";
+  logo.style.filter = "none"; // logo siempre igual
+});
+</script>
 
 </body>
 </html>
+
