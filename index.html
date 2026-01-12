@@ -3,134 +3,156 @@
 <head>
 <meta charset="UTF-8">
 <title>Diccionario Ultra Pro HD</title>
+
 <style>
-  /* ---- Reset y tipografía ---- */
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f5f5f5; /* fondo liso */
-    color: #333;
-    transition: background 0.5s, color 0.5s;
-  }
+:root {
+  --main-color: #ff9f43;
+  --bg-color: #f5f5f5;
+  --text-color: #333;
+  --card-bg: #ffffff;
+}
 
-  h1 {
-    text-align: center;
-    margin-top: 20px;
-    color: #ff6b6b;
-  }
+/* ----- BODY ----- */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background 0.4s, color 0.4s;
+}
 
-  /* ---- Input de búsqueda ---- */
-  #search {
-    width: 100%;
-    max-width: 500px;
-    display: block;
-    margin: 30px auto 20px auto;
-    padding: 12px 20px;
-    font-size: 16px;
-    border-radius: 25px;
-    border: none;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    outline: none;
-    transition: box-shadow 0.3s;
-  }
+/* ----- TITULO ----- */
+h1 {
+  text-align: center;
+  margin: 20px 0;
+  color: var(--main-color);
+}
 
-  #search:focus {
-    box-shadow: 0 6px 18px rgba(0,0,0,0.2);
-  }
+/* ----- LOGO ----- */
+#logo {
+  display: block;
+  margin: 0 auto 30px auto;
+  width: 140px;
+}
 
-  /* ---- Contenedor de cards ---- */
-  #dictionary {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    margin-bottom: 40px;
-  }
+/* ----- SEARCH ----- */
+#search {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto 25px auto;
+  display: block;
+  padding: 14px 20px;
+  border-radius: 25px;
+  border: none;
+  font-size: 16px;
+  outline: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
 
-  /* ---- Cards ---- */
-  .word-card {
-    background-color: #ffffff; /* card liso */
-    border-radius: 16px;
-    padding: 20px;
-    width: 260px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
+#search:focus {
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.1),
+              0 0 0 6px var(--main-color);
+}
 
-  .word-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-  }
+/* ----- DICTIONARY ----- */
+#dictionary {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
 
-  .word-card h2 {
-    margin-top: 0;
-    margin-bottom: 8px;
-    color: var(--main-color, #ff9f43);
-    font-size: 1.4em;
-  }
+/* ----- CARD ----- */
+.word-card {
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  padding: 20px;
+  width: 260px;
+  border-top: 5px solid var(--main-color);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: fade 0.4s ease;
+}
 
-  .word-card p {
-    margin: 5px 0;
-    line-height: 1.4;
-  }
+@keyframes fade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-  .ejemplo {
-    font-style: italic;
-    color: #555;
-  }
+.word-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
 
-  .highlight {
-    background-color: yellow;
-    font-weight: bold;
-    padding: 0 2px;
-    border-radius: 2px;
-  }
+.word-card h2 {
+  margin: 0 0 8px 0;
+  color: var(--main-color);
+}
 
-  .no-results {
-    font-style: italic;
-    color: #666;
-    text-align: center;
-    width: 100%;
-  }
+.word-card p {
+  margin: 5px 0;
+}
 
-  #colorPicker {
-    display: block;
-    margin: 0 auto 30px auto;
-    padding: 5px;
-    width: 50px;
-    height: 50px;
-    border: none;
-    cursor: pointer;
-  }
+.ejemplo {
+  font-style: italic;
+  opacity: 0.8;
+}
 
-  #logo {
-    display: block;
-    margin: 0 auto 40px auto;
-    width: 150px;
-  }
+/* ----- HIGHLIGHT ----- */
+.highlight {
+  background: yellow;
+  font-weight: bold;
+  border-radius: 2px;
+  padding: 0 3px;
+}
 
-  @media (max-width: 600px) {
-    .word-card {
-      width: 90%;
-    }
-    #search {
-      width: 90%;
-    }
-  }
+/* ----- MENSAJES ----- */
+.no-results {
+  width: 100%;
+  text-align: center;
+  opacity: 0.7;
+}
+
+/* ----- CONTROLES ----- */
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 30px 0;
+}
+
+#colorPicker {
+  width: 50px;
+  height: 50px;
+  border: none;
+  cursor: pointer;
+}
+
+/* ----- DARK MODE ----- */
+.dark {
+  --bg-color: #121212;
+  --text-color: #eaeaea;
+  --card-bg: #1f1f1f;
+}
 </style>
 </head>
+
 <body>
 
 <h1>Diccionario Ultra Pro HD</h1>
 <img id="logo" src="logo.png" alt="logo">
 
-<input type="text" id="search" placeholder="Busca una palabra...">
+<input id="search" type="text" placeholder="Busca una palabra...">
+
 <div id="dictionary">
   <p class="no-results">Cargando diccionario...</p>
 </div>
 
-<input type="color" id="colorPicker" value="#ff9f43">
+<div class="controls">
+  <input type="color" id="colorPicker" value="#ff9f43">
+  <button id="darkBtn">🌙</button>
+</div>
 
 <script>
 let words = [];
@@ -138,27 +160,24 @@ let words = [];
 const search = document.getElementById("search");
 const dict = document.getElementById("dictionary");
 const picker = document.getElementById("colorPicker");
-const logo = document.getElementById("logo");
+const darkBtn = document.getElementById("darkBtn");
 
-/* -------- CARGAR JSON -------- */
-fetch('words.json')
-  .then(res => res.json())
+/* ---- LOAD JSON ---- */
+fetch("words.json")
+  .then(r => r.json())
   .then(data => {
     words = data;
     dict.innerHTML = '<p class="no-results">Escribe una palabra para buscar...</p>';
-  })
-  .catch(err => {
-    console.error("Error al cargar JSON:", err);
-    dict.innerHTML = '<p class="no-results">No se pudo cargar el diccionario.</p>';
   });
 
-/* -------- BUSCADOR AVANZADO -------- */
+/* ---- HIGHLIGHT ---- */
 function highlight(text, term) {
   if (!term) return text;
-  const regex = new RegExp(`(${term})`, "gi");
-  return text.replace(regex, '<span class="highlight">$1</span>');
+  return text.replace(new RegExp(`(${term})`, "gi"),
+    '<span class="highlight">$1</span>');
 }
 
+/* ---- SEARCH ---- */
 search.addEventListener("input", () => {
   const t = search.value.toLowerCase();
   dict.innerHTML = "";
@@ -174,30 +193,29 @@ search.addEventListener("input", () => {
     w.ejemplo.toLowerCase().includes(t)
   );
 
-  if (res.length === 0) {
+  if (!res.length) {
     dict.innerHTML = '<p class="no-results">No se encontró ninguna palabra</p>';
     return;
   }
 
-  let html = "";
   res.forEach(w => {
-    html += `
+    dict.innerHTML += `
       <div class="word-card">
         <h2>${highlight(w.palabra, t)}</h2>
         <p>${highlight(w.definicion, t)}</p>
         <p class="ejemplo">${highlight(w.ejemplo, t)}</p>
       </div>`;
   });
-  dict.innerHTML = html;
 });
 
-/* -------- COLOR PICKER -------- */
+/* ---- COLOR PICKER ---- */
 picker.addEventListener("input", () => {
-  const color = picker.value;
-  document.documentElement.style.setProperty("--main-color", color);
-  document.body.style.backgroundColor = "#f5f5f5"; // fondo liso fijo
-  document.body.style.color = "#333";
-  logo.style.filter = "none"; // logo siempre igual
+  document.documentElement.style.setProperty("--main-color", picker.value);
+});
+
+/* ---- DARK MODE ---- */
+darkBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
 });
 </script>
 
