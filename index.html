@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Diccionario joven</title>
+<title>DICCIONARIO JOVEN</title>
 <style>
 :root {
   --main-color: #ff9f43;
@@ -25,6 +25,7 @@ h1 {
   text-align: center;
   margin: 20px 0;
   color: var(--main-color);
+  font-size: 2em;
 }
 
 /* ----- LOGO ----- */
@@ -135,7 +136,7 @@ h1 {
 
 <body>
 
-<h1>Diccionario Ultra Pro Max Neon</h1>
+<h1>DICCIONARIO JOVEN</h1>
 <img id="logo" src="logo.png" alt="logo">
 
 <input id="search" type="text" placeholder="Busca una palabra...">
@@ -163,10 +164,17 @@ const darkBtn = document.getElementById("darkBtn");
 
 /* ---- LOAD JSON ---- */
 fetch("words.json")
-  .then(r => r.json())
+  .then(r => {
+    if(!r.ok) throw new Error("No se pudo cargar words.json");
+    return r.json();
+  })
   .then(data => {
     words = data;
-    dict.innerHTML = "";
+    dict.innerHTML = ""; // no texto al inicio
+  })
+  .catch(err => {
+    console.error(err);
+    dict.innerHTML = '<p class="no-results">No se pudo cargar el diccionario.</p>';
   });
 
 /* ---- HIGHLIGHT ---- */
@@ -218,4 +226,3 @@ darkBtn.addEventListener("click", () => {
 
 </body>
 </html>
-
