@@ -16,7 +16,7 @@
   {"palabra": "Diman", "definicion": "se utiliza para llamar a un amigo. (Sustantivo)", "ejemplo": "Diman, ven aquí."},
   {"palabra": "Diley", "definicion": "viene del inglés, se usa cuando alguien va atrasado.", "ejemplo": "Vas con diley."},
   {"palabra": "Date un chin", "definicion": "significa dar un poco de algo (por ejemplo comida). (Verbo)", "ejemplo": "Date un chin de doritos."},
-  {"palabra": "Diri", "definicion": "se dice de alguien con discapacidad; coloquialmente se usa para insultar a un amigo.", "ejemplo": "Eres  biende diri."},
+  {"palabra": "Diri", "definicion": "se dice de alguien con discapacidad; coloquialmente se usa para insultar a un amigo.", "ejemplo": "Eres biende diri."},
   {"palabra": "Detonar", "definicion": "mantener relaciones sexuales con alguien.", "ejemplo": "¿Detonamos?"},
   {"palabra": "Dar un rule", "definicion": "Dar una vuelta.", "ejemplo": ""},
   {"palabra": "Estar pelao / pelao", "definicion": "significa no tener dinero. (Adjetivo)", "ejemplo": "Estoy pelao de dinero / No vamos a la tienda que estoy pelao."},
@@ -49,6 +49,5 @@
   {"palabra": "Pitufo", "definicion": "Se refiere a los policías.", "ejemplo": ""},
   {"palabra": "Peta", "definicion": "Forma coloquial de referirse a un porro.", "ejemplo": ""},
   {"palabra": "Sapo", "definicion": "persona muy chivata.", "ejemplo": "Le cuento algo y lo dice a todos."},
-  {"palabra": "MARIA","definicion": "Novia de reda y profesora de lengua e ingles en el cifo"}
-    ]
-
+  {"palabra": "MARIA", "definicion": "Novia de reda y profesora de lengua e ingles en el cifo", "ejemplo": ""}
+]
