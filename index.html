@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>DICCIONARIO JOVEN</title>
+
 <style>
 :root {
   --main-color: #ff9f43;
@@ -34,24 +35,57 @@ h1 { text-align: center; margin: 20px 0; color: var(--main-color); }
               0 0 0 6px var(--main-color);
 }
 
-#dictionary { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+#dictionary {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
 
 .word-card {
-  border-radius: 16px; padding: 20px; width: 260px;
+  border-radius: 16px;
+  padding: 20px;
+  width: 260px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-  transition: transform 0.3s, box-shadow 0.3s; color: #fff;
+  transition: transform 0.3s, box-shadow 0.3s;
+  color: #fff;
 }
+
 .word-card h2 { margin: 0 0 8px 0; }
 .word-card p { margin: 5px 0; }
 .ejemplo { font-style: italic; opacity: 0.9; }
 
-.highlight { background: rgba(255,255,0,0.6); font-weight: bold; border-radius: 2px; padding: 0 3px; }
+.highlight {
+  background: rgba(255,255,0,0.6);
+  font-weight: bold;
+  border-radius: 2px;
+  padding: 0 3px;
+}
 
-.no-results { width: 100%; text-align: center; opacity: 0.7; }
+.no-results {
+  width: 100%;
+  text-align: center;
+  opacity: 0.7;
+}
 
-.controls { display: flex; justify-content: center; gap: 20px; margin: 30px 0; }
-#colorPicker { width: 50px; height: 50px; border: none; cursor: pointer; }
-.dark { --bg-color: #121212; --text-color: #eaeaea; }
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 30px 0;
+}
+
+#colorPicker {
+  width: 50px;
+  height: 50px;
+  border: none;
+  cursor: pointer;
+}
+
+.dark {
+  --bg-color: #121212;
+  --text-color: #eaeaea;
+}
 </style>
 </head>
 
@@ -71,21 +105,35 @@ h1 { text-align: center; margin: 20px 0; color: var(--main-color); }
 <script>
 let words = [];
 const neonColors = ["#ff3f81","#ff9f43","#3affc4","#43a1ff","#9d43ff","#ffeb3f","#ff6b6b","#43ff8a"];
+
 const search = document.getElementById("search");
 const dict = document.getElementById("dictionary");
 const picker = document.getElementById("colorPicker");
 const darkBtn = document.getElementById("darkBtn");
 
-/* ---- CARGAR JSON FUNCIONANDO EN GITHUB PAGES Y LOCAL ---- */
+
+// 🔥 CARGA JSON (ARREGLADO + SIN CACHÉ + CON ERRORES)
 function loadJSON(file, callback) {
   const xhr = new XMLHttpRequest();
   xhr.overrideMimeType("application/json");
-  xhr.open('GET', file, true);
+  xhr.open('GET', file + "?v=" + Date.now(), true);
+
   xhr.onreadystatechange = function() {
-    if (xhr.readyState === 4 && xhr.status == "200") {
-      callback(JSON.parse(xhr.responseText));
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        try {
+          const data = JSON.parse(xhr.responseText);
+          console.log("✅ JSON cargado correctamente");
+          callback(data);
+        } catch (e) {
+          console.error("❌ ERROR en JSON:", e);
+        }
+      } else {
+        console.error("❌ ERROR al cargar archivo:", xhr.status);
+      }
     }
   };
+
   xhr.send(null);
 }
 
@@ -93,16 +141,25 @@ loadJSON("words.json", function(data){
   words = data;
 });
 
-/* ---- HIGHLIGHT ---- */
-function highlight(text, term) {
-  if (!term) return text;
-  return text.replace(new RegExp(`(${term})`, "gi"), '<span class="highlight">$1</span>');
+
+// 🔥 highlight seguro
+function escapeRegExp(text) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-/* ---- BUSCADOR ---- */
+function highlight(text, term) {
+  if (!term) return text;
+  const safeTerm = escapeRegExp(term);
+  return text.replace(new RegExp(`(${safeTerm})`, "gi"),
+    '<span class="highlight">$1</span>');
+}
+
+
+// 🔥 BUSCADOR
 search.addEventListener("input", () => {
   const t = search.value.toLowerCase();
   dict.innerHTML = "";
+
   if (!t) return;
 
   const results = words.filter(w =>
@@ -116,8 +173,9 @@ search.addEventListener("input", () => {
     return;
   }
 
-  results.forEach((w,i)=>{
+  results.forEach((w, i) => {
     const color = neonColors[i % neonColors.length];
+
     dict.innerHTML += `
       <div class="word-card" style="background-color:${color}">
         <h2>${highlight(w.palabra, t)}</h2>
@@ -128,13 +186,15 @@ search.addEventListener("input", () => {
   });
 });
 
-/* ---- COLOR PICKER ---- */
-picker.addEventListener("input", ()=>{
+
+// 🔥 COLOR PICKER
+picker.addEventListener("input", () => {
   document.documentElement.style.setProperty("--main-color", picker.value);
 });
 
-/* ---- DARK MODE ---- */
-darkBtn.addEventListener("click", ()=>{
+
+// 🔥 DARK MODE
+darkBtn.addEventListener("click", () => {
   document.body.classList.toggle("dark");
 });
 </script>
